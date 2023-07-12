@@ -1,0 +1,11 @@
+.dealerBoxWapper{
+    display: flex;
+}
+
+.dealerBox{
+    height: 150px;
+    width: 150px;
+    border: 2px solid black;
+    margin-right: 10px;
+
+}
