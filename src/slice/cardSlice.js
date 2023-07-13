@@ -8,7 +8,7 @@ const cardSlice = createSlice({
       card : ""
     }]},
     reducers: {
-      initCardDeck: (state, action) => {
+      initCardDecks: (state, action) => {
         state.value = action.payload;
       }
     }
@@ -16,5 +16,5 @@ const cardSlice = createSlice({
 })
 
 export default cardSlice;
-export const { initCardDeck} = cardSlice.actions;
+export const { initCardDecks } = cardSlice.actions;
 

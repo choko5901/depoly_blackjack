@@ -3,117 +3,40 @@ export function scoreCal(target, who) {
     let totalScore = 0 ;
     let NumberA = 0;
     let dealerOpenCard = 0 ;
-    
-    if(who === "DEALER"){
-        for(let i = 0 ; i < target.length; i ++ ){
-            switch(target[i].card){
-                case 'J':
-                    if(i === 0){
-                        dealerOpenCard = 10;
-                        totalScore = totalScore + 10
-                    }else{
-                        totalScore = totalScore + 10
-                    }
-                    break
-                case 'Q':
-                    if(i === 0){
-                        dealerOpenCard = 10
-                        totalScore = totalScore + 10
-                    }else{
-                        totalScore = totalScore + 10
-                    }
-                    break
-                case 'K':
-                    if(i === 0){
-                        dealerOpenCard = 10
-                        totalScore = totalScore + 10
-                    }else{
-                        totalScore = totalScore + 10
-                        }
-                    break
-                case 'A':
-                    if(i === 0){
-                        dealerOpenCard = 11
-                        totalScore = totalScore + 11
-                    }else{
-                        totalScore = totalScore + 11
-                    } 
-                    break
-                default:
-                    if(i === 0){
-                        dealerOpenCard = target[i].card
-                        totalScore = totalScore + target[i].card
-                    }else{
-                        totalScore = totalScore + target[i].card
-                    } 
-                    break
-    
-            }
-    
-        }
-    }else{
-        for(let i = 0 ; i < target.length; i ++ ){
-      
-            switch(target[i].card){
-                case 'J':
-                    totalScore = totalScore + 10
-                    break
-                case 'Q':
-                    totalScore = totalScore + 10
-                    break
-                case 'K':
-                    totalScore = totalScore + 10
-                    break
-                case 'A':
-                    NumberA = NumberA + 1  
-                    break
-                default:
-                    totalScore = totalScore + target[i].card
-                    break
-    
-            }
-        }
 
-        switch(NumberA){
-            case 0:
-                break
-            case 1:
-                if(totalScore <= 10){
-                    totalScore = totalScore + 11
-                }else{
-                    totalScore = totalScore + 1
-                }
-                break
-            case 2:
-                if(totalScore <= 9){
-                    totalScore = totalScore + 12
-                }else{
-                    totalScore = totalScore + 2
-                }
-                break
-            case 3:
-                if(totalScore <= 8){
-                    totalScore = totalScore + 13
-                }else{
-                    totalScore = totalScore + 3
-                }
-                break
-            case 4:
-                if(totalScore <= 7){
-                    totalScore = totalScore + 14
-                }else{
-                    totalScore = totalScore + 4
-                } 
-                break
-            default:
-                break
 
-        }
+    const carlculated = x => ({
+        on: () => carlculated(x),
+        otherwise: () => x,
+      })
+      const carlculate = x => ({  
+        on: (pred, fn) => (pred(x) ? carlculated(fn(x)) : carlculate(x)),
+        otherwise: fn => fn(x),
+      })
+
+
+    dealerOpenCard = carlculate(target[0].card)
+    .on( dealerOpenCard => typeof(dealerOpenCard) === 'string' && dealerOpenCard !=='A' , () =>10)
+    .on( dealerOpenCard => dealerOpenCard ==='A' , () => 11)
+    .otherwise( dealerOpenCard => dealerOpenCard)
+    
+    target.map(targetCard => {
+        return(carlculate(targetCard.card)
+        .on( cardNumber => typeof(cardNumber) === 'string' && cardNumber !=='A' , () => totalScore = totalScore + 10)
+        .on( cardNumber => cardNumber ==='A' , () => NumberA = NumberA + 1)
+        .otherwise( cardNumber => totalScore = totalScore + cardNumber))
+    })
+
+    carlculate(NumberA)
+    .on(NumberA => NumberA ===1 && who === "MY" && totalScore <= 10, () => totalScore = totalScore + 11)
+    .on(NumberA => NumberA ===2 && who === "MY" && totalScore <= 9, () => totalScore = totalScore + 12)
+    .on(NumberA => NumberA ===3 && who === "MY" && totalScore <= 8, () => totalScore = totalScore + 13)
+    .on(NumberA => NumberA ===4 && who === "MY" && totalScore <= 7, () => totalScore = totalScore + 14)
+    .on(NumberA => who === "MY" && totalScore > 10, () => totalScore = totalScore + NumberA)
+    .on(NumberA => who === "DEALER", ()=> totalScore = totalScore + NumberA * 11)
+    .otherwise(NumberA => totalScore)
 
     
-    }
-    
-
     return  [totalScore, dealerOpenCard]
     
 }

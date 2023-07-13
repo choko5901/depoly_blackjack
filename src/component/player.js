@@ -2,69 +2,72 @@ import React, {useEffect, useState} from 'react'
 import "../css/player.css"
 import { useDispatch, useSelector } from 'react-redux'
 import {scoreCal} from '../function/scoreCal'
-import {myFinalScore} from '../slice/scoreSlice'
+import {myFinalScores} from '../slice/scoreSlice'
 
+import {winConfrimSweet} from '../alert/resultAlert'
 
+const Player = ()=>{
 
+    const myTurnCards = useSelector((state)=>state.initCardDeck.value)
+    const [myCards , setmyCards] =useState();
+    const [myScores, setmyScores] = useState(0);
+    const [nextCards, setnextCards] = useState(0);
+    const [isBlackjack, setisBlackjack] = useState(true)
 
-const Player = ({setcheckBlackjack})=>{
-
-    const myTurnCard = useSelector((state)=>state.initCardDeck.value)
-    const [myCard , setMycard] =useState();
-    const [myScore, setMyScore] = useState(0);
-    const [nextCard, setNextCard] = useState(0);
     
     const dispatch = useDispatch();
 
-
+    useEffect(()=>{
+        if(myTurnCards.length > 1){
+            setmyCards(myTurnCards.slice(0,2))
+            setmyScores((prevState)=> prevState * 0 + scoreCal(myTurnCards.slice(0,2), "MY")[0])
+            
+        }
+    },[myTurnCards])
     
+    useEffect(()=>{
+        if(myCards){
+            setmyScores((a) => a * 0 + scoreCal(myCards , "MY")[0])
+        }
+    },[myCards])
+
 
     useEffect(()=>{
-        if(myTurnCard.length > 1){
-            setMycard(myTurnCard.slice(0,2))
-            setMyScore((prevState)=> prevState * 0 + scoreCal(myTurnCard.slice(0,2), "MY")[0])
-        }
-    },[myTurnCard])
-
+        dispatch(myFinalScores(myScores))
+        if(myScores === 21 && isBlackjack){
+            winConfrimSweet("balckJack 승리","게임을 다시 시작 하시겠습니까?")
+       }
+    },[dispatch, myScores, isBlackjack])
+                              
 
     const hit =() =>{
-        setNextCard((prevState)=> prevState +1)
-        setMycard((prevState)=>[...prevState, myTurnCard[nextCard + 2]])
-        setcheckBlackjack(false)
+        setnextCards((prevState)=> prevState +1)
+        setmyCards((prevState)=>[...prevState, myTurnCards[nextCards + 2]])
+        setisBlackjack(false)
     }
-
-
-
-    useEffect(()=>{
-        if(myCard){
-            setMyScore((a) => a * 0 + scoreCal(myCard)[0])
-            // setMyFinalScore((prevState)=> prevState* 0 + myScore)
-        }
-    },[myCard])
-
-
-    useEffect(()=>{
-        dispatch(myFinalScore(myScore))
-    },[dispatch, myScore])
-
 
     return(<>
     
         <div className='playerWrapper'>
-        {myScore && myCard ?
+        {myScores && myCards ?
             <>
-                <h2>현재 나의 점수 : {myScore} </h2>
+                <h2>현재 나의 점수 : {myScores} </h2>
                 <div className='MycardContainer'>
-                    { Array(myCard.length).fill().map((v,i) => (
+                    { Array(myCards.length).fill().map((v,i) => (
                         <div className='myBox' key={i}>
-                             보유 {i+1}번 카드는: {myCard[i].mark + myCard[i].card}
+                            <img className= 'cardImg' src = {require("../assets/"+ myCards[i].mark + myCards[i].card+".png")} alt=''/>
                         </div>
                     ))}
-
                 </div>
             </>
             :
             <>
+                <h2>현재 나의 점수 : {myScores} </h2>
+                    <div className='MycardContainer'>
+                        <div className='myBox'></div>
+                        <div className='myBox'></div>
+                    </div>
+
             </>
 
             }

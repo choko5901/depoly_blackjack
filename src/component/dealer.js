@@ -2,65 +2,65 @@ import React, {memo, useEffect, useMemo, useState} from 'react'
 import "../css/dealer.css"
 import { useDispatch} from 'react-redux'
 import {cards} from '../function/initShuffle'
-import {initCardDeck} from '../slice/cardSlice'
+import {initCardDecks} from '../slice/cardSlice'
 import {scoreCal} from '../function/scoreCal'
-import {dealerFinalScore} from '../slice/scoreSlice'
+import {dealerFinalScores} from '../slice/scoreSlice'
 
 
-const Dealer= memo(({dealerOpen})=>{
+const Dealer= memo(({isDealerOpen})=>{
 
-    const firstCard = useMemo(()=> cards(),[])
     const dispatch = useDispatch();
+    let firstCards = useMemo(()=> cards(),[])
+    let openScore = useMemo(()=> scoreCal(firstCards.slice(0,2),"DEALER")[1],[firstCards])
+    let firstDealerCards = scoreCal(firstCards.slice(0,2),"DEALER")[0]
 
-    const [dealerScore , setdealerScore] = useState(scoreCal(firstCard.slice(0,2),"DEALER")[0])
-    const openScore = useMemo(()=> scoreCal(firstCard.slice(0,2),"DEALER")[1],[firstCard])
 
-
-
-    const [initDealerCard, setInitDealerCard] = useState([{
+    const [dealerScores , setdealerScores] = useState(firstDealerCards)
+    const [initDealerCards, setInitDealerCards] = useState([{
         mark : "",
         card : 0,
     }])
 
     useEffect(()=>{
-        if(dealerScore >= 17){
-            dispatch(initCardDeck(firstCard.slice(2)))
-            setInitDealerCard(firstCard.slice(0,2))
-            dispatch(dealerFinalScore(dealerScore))
+        if(dealerScores >= 17){
+            dispatch(initCardDecks(firstCards.slice(2)))
+            setInitDealerCards(firstCards.slice(0,2))
+            dispatch(dealerFinalScores(dealerScores))
         }else{
-            dispatch(initCardDeck(firstCard.slice(3)))
-            setInitDealerCard(firstCard.slice(0,3))
-            setdealerScore(scoreCal(firstCard.slice(0,3),"DEALER")[0])
-            dispatch(dealerFinalScore(scoreCal(firstCard.slice(0,3),"DEALER")[0]))
+            dispatch(initCardDecks(firstCards.slice(3)))
+            setInitDealerCards(firstCards.slice(0,3))
+            setdealerScores(scoreCal(firstCards.slice(0,3),"DEALER")[0])
+            dispatch(dealerFinalScores(scoreCal(firstCards.slice(0,3),"DEALER")[0]))
         }
         // eslint-disable-next-line
-    },[dispatch , firstCard])
+    },[dispatch , firstCards])
 
 
     return( 
         <>
         
-            { dealerOpen ?
-            <>
+            { isDealerOpen ?
+            <div className='dealer_wrapper'>
                 <h2>게임 진행중 ..</h2>
-                <h2>딜러 점수 : {openScore} </h2>
-                <div className='dealerBoxWapper'>
-                    <div className='dealerBox'>
-                        오픈된 카드는: {initDealerCard[0].mark + initDealerCard[0].card}
+                <h2>딜러 점수는 : {openScore} </h2>
+                <div className='dealer_box-wapper'>
+                    <div className='dealer-box'>
+                       { initDealerCards.length > 1 && <img className= 'cardImg' src = {require("../assets/"+ initDealerCards[0].mark + initDealerCards[0].card+".png")} alt=''/>  }
                     </div>
                 </div>
-            </>
+            </div>
                 :
-            <>
-                <h2>딜러 점수 : {dealerScore} </h2>
-                <div className='dealerBoxWapper'>
-                    { Array(initDealerCard.length).fill().map((v,i) => (
-                    <div className='dealerBox' key={i}>
-                        딜러 보유 {i+1}번 카드는: {initDealerCard[i].mark + initDealerCard[i].card}
+            <div className='dealer_wrapper'>
+                <h2>게임 종료!</h2>
+                <h2>딜러 점수는: {dealerScores} </h2>
+                <div className='dealer_box-wapper'>
+                    { Array(initDealerCards.length).fill().map((v,i) => (
+                    <div className='dealer-box' key={i}>
+                        <img className= 'cardImg' src = {require("../assets/"+ initDealerCards[i].mark + initDealerCards[i].card+".png")} alt='' />
                     </div>
                     ))}
                 </div>
-            </>
+            </div>
 
             }
             

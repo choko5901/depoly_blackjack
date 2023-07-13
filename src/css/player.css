@@ -1,20 +1,30 @@
 .playerWrapper{
     margin-top: 200px;
+    margin-left: 20px;
 }
 
 .MycardContainer{
     display: flex;
+    overflow-y: auto;
 }
 
 
 .myBox{
-    height: 150px;
+    height: 190px;
     width: 150px;
-    border: 2px solid black;
     margin-right: 10px;
 }
 
 
 .addCard{
-    margin-top: 30px;
+    width: 80px;
+    height: 40px;
+    margin-top: 50px;
+    margin-left: 224px;
+
+}
+
+.cardImg{
+    height: 100%;
+    width: 100%;
 }

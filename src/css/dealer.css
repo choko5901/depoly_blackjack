@@ -1,11 +1,15 @@
-.dealerBoxWapper{
+.dealer_wrapper{
+    margin-left: 20px;
+}
+
+
+.dealer_box-wapper{
     display: flex;
 }
 
-.dealerBox{
-    height: 150px;
+.dealer-box{
+    height: 190px;
     width: 150px;
-    border: 2px solid black;
     margin-right: 10px;
 
 }

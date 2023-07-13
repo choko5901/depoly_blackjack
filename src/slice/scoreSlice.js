@@ -5,10 +5,10 @@ const finalSlice = createSlice({
     name: 'cardDeck',
     initialState: {value: []},
     reducers: {
-      dealerFinalScore: (state, action) => {
+      dealerFinalScores: (state, action) => {
         state.value[0] = action.payload;
       },
-      myFinalScore: (state, action) => {
+      myFinalScores: (state, action) => {
         state.value[1] = action.payload;
       },
     }
@@ -16,4 +16,4 @@ const finalSlice = createSlice({
 })
 
 export default finalSlice;
-export const { dealerFinalScore, myFinalScore } = finalSlice.actions;
+export const { dealerFinalScores, myFinalScores } = finalSlice.actions;
